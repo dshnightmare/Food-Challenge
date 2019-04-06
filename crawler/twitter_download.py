@@ -104,23 +104,23 @@ with open('..\data\download.csv', 'w', encoding='UTF-8') as csvfile:
         else:
             newsurl = url
         print(newsurl)
-        # try:
-        #     driver.get(newsurl)
-        #     print("<<<<<<<<<<<<Waiting>>>>>>>>>>>")
-        #     WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.TAG_NAME, "html")))
-        # except:
-        #     print("<<<<<<<<<<<<???????>>>>>>>>>>>")
-        # text_body = text_from_html(driver.page_source)
-        # print(text_body)
-        # print("<<<<<<<<<<<<Writing>>>>>>>>>>>")
-        # writer.writerow({
-        #     'title': title,
-        #
-        #     'url': url,
-        #
-        #     'newsurl': newsurl,
-        #
-        #     'abstract': abstract,
-        #
-        #     'text_body': text_body
-        # })
+        try:
+            driver.get(newsurl)
+            print("<<<<<<<<<<<<Waiting>>>>>>>>>>>")
+            WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.TAG_NAME, "html")))
+        except:
+            print("<<<<<<<<<<<<???????>>>>>>>>>>>")
+        text_body = text_from_html(driver.page_source)
+        print(text_body)
+        print("<<<<<<<<<<<<Writing>>>>>>>>>>>")
+        writer.writerow({
+            'title': title,
+
+            'url': url,
+
+            'newsurl': newsurl,
+
+            'abstract': abstract,
+
+            'text_body': text_body
+        })

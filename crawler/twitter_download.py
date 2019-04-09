@@ -53,8 +53,10 @@ with open('..\data\download.csv', 'w', encoding='UTF-8') as csvfile:
     options.add_argument('--disable-gpu')
     driver = webdriver.Chrome(chrome_options=options, executable_path='../bin/chromedriver.exe')
     for index, lines in enumerate(data):
-        # if index < 80:
-        #     continue
+        #3126是音频
+        #3342是音频
+        if index < 1500:
+            continue
         title = lines.split('\t')[4]
         url = lines.split('\t')[5]
         abstract = lines.split('\t')[6]
@@ -82,6 +84,8 @@ with open('..\data\download.csv', 'w', encoding='UTF-8') as csvfile:
                         print('no link in text: {}'.format(str(e)))
                         try:
                             media = driver.find_element_by_class_name('card2 js-media-container')
+                            type = media.get_attribute('data-card2-name')
+                            print('media type: {}'.format(type))
                             link = media.find_element_by_tag_name('a')
                             newsurl = link.get_attribute('href')
                         except NoSuchElementException as e:
@@ -104,23 +108,23 @@ with open('..\data\download.csv', 'w', encoding='UTF-8') as csvfile:
         else:
             newsurl = url
         print(newsurl)
-        try:
-            driver.get(newsurl)
-            print("<<<<<<<<<<<<Waiting>>>>>>>>>>>")
-            WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.TAG_NAME, "html")))
-        except:
-            print("<<<<<<<<<<<<???????>>>>>>>>>>>")
-        text_body = text_from_html(driver.page_source)
-        print(text_body)
-        print("<<<<<<<<<<<<Writing>>>>>>>>>>>")
-        writer.writerow({
-            'title': title,
-
-            'url': url,
-
-            'newsurl': newsurl,
-
-            'abstract': abstract,
-
-            'text_body': text_body
-        })
+        # try:
+        #     driver.get(newsurl)
+        #     print("<<<<<<<<<<<<Waiting>>>>>>>>>>>")
+        #     WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.TAG_NAME, "html")))
+        # except:
+        #     print("<<<<<<<<<<<<???????>>>>>>>>>>>")
+        # text_body = text_from_html(driver.page_source)
+        # print(text_body)
+        # print("<<<<<<<<<<<<Writing>>>>>>>>>>>")
+        # writer.writerow({
+        #     'title': title,
+        #
+        #     'url': url,
+        #
+        #     'newsurl': newsurl,
+        #
+        #     'abstract': abstract,
+        #
+        #     'text_body': text_body
+        # })

@@ -12,7 +12,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
-import newspaper
 from newspaper import Article
 
 def tag_visible(element):
@@ -41,6 +40,7 @@ def wait_for_page_load(self, timeout=30):
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')
 options.add_argument('--disable-gpu')
+options.add_argument('--log-level=3')
 titles = []
 abstracts = []
 urls = []
@@ -59,8 +59,8 @@ def run(start, end):
 
         driver = webdriver.Chrome(chrome_options=options, executable_path='../bin/chromedriver.exe')
         # driver = driver = webdriver.Firefox(options=options, executable_path='C:\pythonpath\geckodriver.exe')
-
-        for index, lines in enumerate(data):
+        print(start, end)
+        for index, lines in enumerate(data[start:end]):
             title = lines.split('\t')[4]
             url = lines.split('\t')[5]
             abstract = lines.split('\t')[6]
@@ -70,7 +70,7 @@ def run(start, end):
             3. twitter url + text only ()
             4. news url
             '''
-            print('{}: {}'.format(index, url))
+            print('{}: {}'.format(start + index, url))
             pattern1 = re.compile('https://twitter.com/.+/status/[0-9]+')
             if pattern1.match(url):
                 pattern2 = re.compile('https://t.co/[a-zA-Z0-9]+')
@@ -211,7 +211,7 @@ def run(start, end):
 if __name__ == '__main__':
     # run in range
     parser = ArgumentParser()
-    parser.add_argument('-S', '--start', default=0, help='start from this index')
-    parser.add_argument('-E', '--end', default=len(data), help='end by this index')
+    parser.add_argument('--start',  type=int, default=0, help='start from this index')
+    parser.add_argument('--end', type=int, default=len(data), help='end by this index')
     args = parser.parse_args()
     run(args.start, args.end)

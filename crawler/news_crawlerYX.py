@@ -46,11 +46,14 @@ abstracts = []
 urls = []
 newsurl = []
 
-with open("../data/Training Set for Competition.txt", encoding='UTF-8') as f:  # read url from txt
-    data = f.readlines()
-data = data[1:]
 
-def run(start, end):
+def run(start, end, file):
+    with open("../data/{} Set for Competition.txt".format(file), encoding='UTF-8') as f:  # read url from txt
+        data = f.readlines()
+    data = data[1:]
+    if end == -1:
+        end = len(data)
+    print(start, end)
     with open('../data/download{}-{}.csv'.format(start, end), 'w', encoding='UTF-8') as csvfile,\
             open('../data/untreated{}-{}'.format(start, end), 'w', encoding='UTF-8') as undo:
         fieldnames = ['title', 'url', 'newsurl', 'abstract', 'text_body']
@@ -59,7 +62,6 @@ def run(start, end):
 
         driver = webdriver.Chrome(chrome_options=options, executable_path='../bin/chromedriver.exe')
         # driver = driver = webdriver.Firefox(options=options, executable_path='C:\pythonpath\geckodriver.exe')
-        print(start, end)
         for index, lines in enumerate(data[start:end]):
             title = lines.split('\t')[4]
             url = lines.split('\t')[5]
@@ -124,7 +126,7 @@ def run(start, end):
                 except TimeoutException as e:
                     num += 1
                     print("<<<<<<<<<<<<loading error {}>>>>>>>>>>>".format(num))
-                    if num <= 3:
+                    if num < 3:
                         continue
                     else:
                         writer.writerow({
@@ -212,6 +214,7 @@ if __name__ == '__main__':
     # run in range
     parser = ArgumentParser()
     parser.add_argument('--start',  type=int, default=0, help='start from this index')
-    parser.add_argument('--end', type=int, default=len(data), help='end by this index')
+    parser.add_argument('--end', type=int, default=-1, help='end by this index')
+    parser.add_argument('--file', type=str, default='Training', help='Training or test')
     args = parser.parse_args()
-    run(args.start, args.end)
+    run(args.start, args.end, args.file)
